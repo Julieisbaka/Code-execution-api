@@ -1,0 +1,7 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+WORKDIR /code
+COPY Program.cs ./
+COPY App.csproj ./
+RUN if [ -f App.csproj ]; then dotnet restore App.csproj; fi
+RUN dotnet new console -n App && mv Program.cs App/Program.cs && cd App && if [ -f ../App.csproj ]; then mv ../App.csproj App/App.csproj; fi && dotnet build -c Release
+CMD ["dotnet", "run", "--project", "App"]

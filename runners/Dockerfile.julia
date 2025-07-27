@@ -1,0 +1,6 @@
+FROM julia:1.10
+WORKDIR /code
+COPY main.jl ./
+COPY packages.txt ./
+RUN if [ -f packages.txt ]; then julia -e "for pkg in readlines(\"packages.txt\"); import Pkg; Pkg.add(pkg) end"; fi
+CMD ["julia", "main.jl"]

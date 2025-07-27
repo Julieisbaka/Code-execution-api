@@ -1,0 +1,7 @@
+FROM rust:1.77-alpine
+WORKDIR /code
+COPY main.rs ./
+COPY Cargo.toml ./
+COPY build.rs ./
+RUN if [ -f Cargo.toml ]; then cargo build --release; else rustc main.rs -o main; fi
+CMD ["/bin/sh", "-c", "if [ -f Cargo.toml ]; then ./target/release/main; else ./main; fi"]

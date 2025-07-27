@@ -1,0 +1,5 @@
+FROM erlang:26-alpine
+WORKDIR /code
+COPY main.erl ./
+RUN erlc main.erl
+CMD ["erl", "-noshell", "-s", "main", "start", "-s", "init", "stop"]

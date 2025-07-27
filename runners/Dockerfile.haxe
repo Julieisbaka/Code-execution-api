@@ -1,0 +1,5 @@
+FROM haxe:4.3.4-alpine
+WORKDIR /code
+COPY Main.hx ./
+RUN haxe -main Main -js main.js
+CMD ["node", "main.js"]

@@ -1,0 +1,6 @@
+FROM python:3.12-alpine
+WORKDIR /usr/src/app
+COPY code.py ./
+COPY requirements.txt ./
+RUN if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+ENTRYPOINT ["python3", "code.py"]

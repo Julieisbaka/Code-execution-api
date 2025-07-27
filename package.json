@@ -1,0 +1,14 @@
+{
+  "name": "code-execution-api",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JulieISBaka",
+  "license": "ISC",
+  "description": "An API that allows for executing code on the web.",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

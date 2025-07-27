@@ -1,0 +1,7 @@
+# Minimal Node.js Dockerfile for code execution
+FROM node:20-alpine
+WORKDIR /usr/src/app
+COPY run.js ./
+COPY package.json ./
+RUN if [ -f package.json ]; then npm install; fi
+ENTRYPOINT ["node", "run.js"]
