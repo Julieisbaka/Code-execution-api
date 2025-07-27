@@ -5,11 +5,14 @@ exec('docker info', (err) => {
     console.error('[ERROR] Docker is not running or not installed. Please start Docker for code execution to work.');
   }
 });
+
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = 5000;
-// Serve static files for test web page
-app.use(express.static('public'));
+// Serve static files for frontend, configurable root
+const frontendRoot = process.env.FRONTEND_ROOT || 'public';
+app.use(express.static(frontendRoot));
 
 app.use(express.json());
 
