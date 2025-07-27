@@ -3,5 +3,7 @@ WORKDIR /usr/src/app
 COPY code.py ./
 COPY requirements.txt ./
 RUN if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+# Cython and Hylang language support
 RUN pip install cython
+RUN pip install hy
 ENTRYPOINT ["python3", "code.py"]

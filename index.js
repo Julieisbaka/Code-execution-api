@@ -28,7 +28,6 @@ const cppRunner = require('./runners/cpp');
 const csharpRunner = require('./runners/csharp');
 const elixirRunner = require('./runners/elixir');
 const phpRunner = require('./runners/php');
-const hylangRunner = require('./runners/hylang');
 const swiftRunner = require('./runners/swift');
 const zigRunner = require('./runners/zig');
 const perlRunner = require('./runners/perl');
@@ -46,7 +45,6 @@ const runners = {
   csharp: csharpRunner,
   elixir: elixirRunner,
   php: phpRunner,
-  hylang: hylangRunner,
   swift: swiftRunner,
   zig: zigRunner,
   perl: perlRunner,
@@ -54,17 +52,21 @@ const runners = {
   julia: juliaRunner
 };
 
+
 app.post('/execute', async (req, res) => {
   const { language, code, packages, requirementsTxt, packageJson, gems, gemfile, nodeVersion, pythonVersion, nugetPackages, csproj } = req.body;
   if (!language || !code) {
     return res.status(400).json({ error: 'Missing language or code' });
   }
-  const runner = runners[language];
-  if (!runner) {
-    return res.status(400).json({ error: 'Unsupported language' });
+  let runner = runners[language];
+  let opts = { requirementsTxt, packageJson, gems, gemfile, nodeVersion, pythonVersion, nugetPackages, csproj };
+  // Route hylang to python runner with lang: 'hylang'
+  if (language === 'hylang') {
+    runner = pythonRunner;
+    opts.lang = 'hylang';
   }
   try {
-  const result = await runner(code, packages, { requirementsTxt, packageJson, gems, gemfile, nodeVersion, pythonVersion, nugetPackages, csproj });
+    const result = await runner(code, packages, opts);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });

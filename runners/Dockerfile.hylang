@@ -1,5 +1,0 @@
-FROM python:3.12-alpine
-RUN pip install hy
-WORKDIR /code
-COPY main.hy ./
-CMD ["hy", "main.hy"]

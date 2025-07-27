@@ -4,6 +4,7 @@ WORKDIR /usr/src/app
 COPY run.js ./
 COPY package.json ./
 RUN if [ -f package.json ]; then npm install; fi
+# React, typescript, and haxe language support as well as their types
 RUN npm install typescript
 RUN npm install react
 RUN npm install @types/react @types/node
