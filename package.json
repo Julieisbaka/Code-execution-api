@@ -9,6 +9,7 @@
   "license": "ISC",
   "description": "An API that allows for executing code on the web.",
   "dependencies": {
+    "dotenv": "^17.2.1",
     "express": "^5.1.0"
   }
 }

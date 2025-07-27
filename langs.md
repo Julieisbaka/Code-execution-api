@@ -4,7 +4,7 @@ matlab (python packages)
 
 coffeescript
 
-bash(potentially impossiable)
+bash(potentially impossible)
 
 R/R++
 
@@ -28,7 +28,7 @@ Tynker(may be impossible)
 
 Assembly
 
-Binary (potentially impossiable)
+Binary (potentially impossible)
 
 Webassembly
 
@@ -62,21 +62,21 @@ Vlang
 
 Unrealscript(may be impossible)
 
-Rocoq(can be added with coqjs)
+Rocoq(can be added with Coqjs)
 
-Typescript(can be add as a package to node.js)
+Typescript(can be added as a package to node.js)
 
 Maple
 
 Magma
 
-Groovy(can be added to java)
+Groovy(can be added to Java)
 
-octave(verg similar to python - i think)
+octave(very similar to Python - I think)
 
 Gdscript(may be impossible)
 
-Cython (Can be added as a python package)
+Cython (Can be added as a Python package)
 
 BASIC
 
