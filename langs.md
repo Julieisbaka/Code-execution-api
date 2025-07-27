@@ -18,6 +18,14 @@ Haskall
 
 Cobol
 
+G
+
+J/J++
+
+J#
+
+Tynker
+
 Assembly
 
 Binary
@@ -46,3 +54,12 @@ Wolfram
 
 Clojure
 
+Zebra
+
+Z++
+
+Vlang
+
+Unrealscript
+
+Rocoq
