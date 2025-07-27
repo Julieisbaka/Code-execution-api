@@ -3,9 +3,7 @@
 This project is a modular Node.js + Express API for executing code in various languages. It is designed for easy extension to new languages and uses Docker for secure sandboxing.
 
 ## Features
-- REST API for code execution
 - Modular language runner system
-- Initial support for Node.js code execution
 - Docker-ready for sandboxing
 
 
