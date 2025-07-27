@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "JulieISBaka",
-  "license": "ISC",
+  "license": "MIT",
   "description": "An API that allows for executing code on the web.",
   "dependencies": {
     "dotenv": "^17.2.1",

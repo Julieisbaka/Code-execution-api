@@ -4,4 +4,6 @@ WORKDIR /usr/src/app
 COPY run.js ./
 COPY package.json ./
 RUN if [ -f package.json ]; then npm install; fi
+RUN npm install typescript
+RUN npm install react
 ENTRYPOINT ["node", "run.js"]
