@@ -1,5 +1,7 @@
 FROM haxe:4.3.4-alpine
 WORKDIR /code
+# Install Node.js (for running JS output)
+RUN apk add --no-cache nodejs npm
 COPY Main.hx ./
 RUN haxe -main Main -js main.js
 CMD ["node", "main.js"]
