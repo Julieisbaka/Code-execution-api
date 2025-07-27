@@ -4,9 +4,9 @@ matlab (python packages)
 
 coffeescript
 
-bash
+bash(potentially impossiable)
 
-R
+R/R++
 
 F# (net packages)
 
@@ -24,11 +24,11 @@ J/J++
 
 J#
 
-Tynker
+Tynker(may be impossible)
 
 Assembly
 
-Binary
+Binary (potentially impossiable)
 
 Webassembly
 
@@ -50,7 +50,7 @@ ML
 
 Fortran
 
-Wolfram
+Wolfram(may be impossible)
 
 Clojure
 
@@ -60,6 +60,28 @@ Z++
 
 Vlang
 
-Unrealscript
+Unrealscript(may be impossible)
 
-Rocoq
+Rocoq(can be added with coqjs)
+
+Typescript(can be add as a package to node.js)
+
+Maple
+
+Magma
+
+Groovy(can be added to java)
+
+octave(verg similar to python - i think)
+
+Gdscript(may be impossible)
+
+Cython (Can be added as a python package)
+
+BASIC
+
+Blockly
+
+Autohotkey (probably impossible)
+
+Autolisp / Visual lisp
