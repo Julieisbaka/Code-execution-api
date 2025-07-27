@@ -1,8 +1,8 @@
 ***PACKAGE SUPPORT HAS NOT BEEN TESTED THIS IS JUST EXECUTION SUPPORT***
 
-Python
+Python (Pyodide works better then this API use that instead)
 
-Node.js
+Node.js (Browser javascript engine works better for javascript use that instead)
 
 Haxe (Works but needs improvement)
 

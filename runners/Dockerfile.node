@@ -6,4 +6,6 @@ COPY package.json ./
 RUN if [ -f package.json ]; then npm install; fi
 RUN npm install typescript
 RUN npm install react
+RUN npm install @types/react @types/node
+RUN npm install haxe
 ENTRYPOINT ["node", "run.js"]
