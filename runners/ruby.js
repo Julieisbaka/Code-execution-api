@@ -4,6 +4,7 @@ const path = require('path');
 const { exec } = require('child_process');
 const os = require('os');
 
+
 module.exports = async function runRuby(code, _packages, opts = {}) {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ruby-runner-'));
   const codePath = path.join(tempDir, 'code.rb');
@@ -20,8 +21,14 @@ module.exports = async function runRuby(code, _packages, opts = {}) {
     hasGemfile = true;
   }
 
-  const dockerfilePath = path.resolve(__dirname, 'Dockerfile.ruby');
-  fs.copyFileSync(dockerfilePath, path.join(tempDir, 'Dockerfile'));
+  // Dynamically generate Dockerfile
+  let dockerfile = 'FROM ruby:3.3-alpine\nWORKDIR /usr/src/app\nCOPY code.rb ./\n';
+  if (hasGemfile) {
+    dockerfile += 'COPY Gemfile ./\nRUN bundle install\n';
+  }
+  dockerfile += 'ENTRYPOINT ["ruby", "code.rb"]\n';
+  fs.writeFileSync(path.join(tempDir, 'Dockerfile'), dockerfile);
+
   const imageName = 'code-runner-ruby';
   await new Promise((resolve, reject) => {
     exec(`docker build -t ${imageName} .`, { cwd: tempDir }, (err, stdout, stderr) => {

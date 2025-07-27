@@ -3,6 +3,7 @@ const path = require('path');
 const { exec } = require('child_process');
 const os = require('os');
 
+
 module.exports = async function runJulia(code, _packages, opts = {}) {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'julia-runner-'));
   const codePath = path.join(tempDir, 'main.jl');
@@ -15,8 +16,15 @@ module.exports = async function runJulia(code, _packages, opts = {}) {
     hasPackages = true;
   }
 
-  const dockerfilePath = path.resolve(__dirname, 'Dockerfile.julia');
-  fs.copyFileSync(dockerfilePath, path.join(tempDir, 'Dockerfile'));
+  // Dynamically generate Dockerfile
+  let dockerfile = 'FROM julia:1.10\nWORKDIR /code\nCOPY main.jl ./\n';
+  if (hasPackages) {
+    dockerfile += 'COPY packages.txt ./\n';
+    dockerfile += 'RUN julia -e "for pkg in readlines(\\"packages.txt\\"); import Pkg; Pkg.add(pkg) end"\n';
+  }
+  dockerfile += 'CMD ["julia", "main.jl"]\n';
+  fs.writeFileSync(path.join(tempDir, 'Dockerfile'), dockerfile);
+
   const imageName = 'code-runner-julia';
   await new Promise((resolve, reject) => {
     exec(`docker build -t ${imageName} .`, { cwd: tempDir }, (err, stdout, stderr) => {
