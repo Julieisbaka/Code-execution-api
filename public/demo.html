@@ -34,23 +34,111 @@
       <option value="haxe">Haxe</option>
       <option value="julia">Julia</option>
     </select><br>
+    <div id="deps-section" style="margin-top:1em;"></div>
     <label for="code">Code:</label><br>
     <textarea id="code" required>// Enter your code here</textarea><br>
+    <label><input type="checkbox" id="manual-mode"> Manual JSON request</label><br>
+    <div id="manual-json-section" style="display:none;margin-top:1em;">
+      <label for="manual-json">Raw JSON request body:</label><br>
+      <textarea id="manual-json" style="height:100px;" placeholder='{"language":"python","code":"print(123)","pipPackages":["requests"]}'></textarea><br>
+    </div>
     <button type="submit">Run Code</button>
   </form>
   <h2>Output:</h2>
   <pre id="output"></pre>
   <script>
+    // Dependency input templates for each language
+    const depInputs = {
+      node: '<label>npm packages (comma separated):</label><br><input id="npm-packages" type="text" placeholder="e.g. lodash, express"><br>',
+      python: '<label>pip packages (comma separated):</label><br><input id="pip-packages" type="text" placeholder="e.g. requests, numpy"><br>',
+      ruby: '<label>Gems (comma separated):</label><br><input id="gems" type="text" placeholder="e.g. sinatra, json"><br>' +
+            '<label>Custom Gemfile (optional):</label><br><textarea id="gemfile" placeholder="Paste Gemfile here"></textarea><br>',
+      java: '<label>Maven dependencies (comma separated groupId:artifactId:version):</label><br><input id="maven-deps" type="text" placeholder="e.g. org.apache.commons:commons-lang3:3.12.0"><br>',
+      go: '',
+      rust: '<label>Cargo.toml (optional):</label><br><textarea id="cargo-toml" placeholder="Paste Cargo.toml here"></textarea><br>' +
+            '<label>build.rs (optional):</label><br><textarea id="build-rs" placeholder="Paste build.rs here"></textarea><br>',
+      erlang: '',
+      cpp: '',
+      csharp: '<label>NuGet packages (comma separated name[:version]):</label><br><input id="nuget-packages" type="text" placeholder="e.g. Newtonsoft.Json:13.0.1"><br>' +
+              '<label>Custom .csproj (optional):</label><br><textarea id="csproj" placeholder="Paste .csproj here"></textarea><br>',
+      elixir: '',
+      php: '',
+      hylang: '',
+      swift: '',
+      zig: '',
+      perl: '',
+      haxe: '',
+      julia: '<label>Julia packages (comma separated):</label><br><input id="julia-packages" type="text" placeholder="e.g. DataFrames, Plots"><br>'
+    };
+
+    function updateDepsSection() {
+      const lang = document.getElementById('language').value;
+      document.getElementById('deps-section').innerHTML = depInputs[lang] || '';
+    }
+    document.getElementById('language').addEventListener('change', updateDepsSection);
+    updateDepsSection();
+
+    // Manual JSON mode toggle
+    document.getElementById('manual-mode').addEventListener('change', function() {
+      document.getElementById('manual-json-section').style.display = this.checked ? '' : 'none';
+    });
+
     document.getElementById('exec-form').onsubmit = async function(e) {
       e.preventDefault();
-      const language = document.getElementById('language').value;
-      const code = document.getElementById('code').value;
       document.getElementById('output').textContent = 'Running...';
+      const manualMode = document.getElementById('manual-mode').checked;
+      let body;
+      if (manualMode) {
+        try {
+          body = JSON.parse(document.getElementById('manual-json').value);
+        } catch (err) {
+          document.getElementById('output').textContent = 'Invalid JSON: ' + err.message;
+          return;
+        }
+      } else {
+        const language = document.getElementById('language').value;
+        const code = document.getElementById('code').value;
+        body = { language, code };
+        // Collect dependency info based on language
+        if (language === 'node') {
+          const pkgs = document.getElementById('npm-packages')?.value.trim();
+          if (pkgs) body.npmPackages = pkgs.split(',').map(s => s.trim()).filter(Boolean);
+        } else if (language === 'python') {
+          const pkgs = document.getElementById('pip-packages')?.value.trim();
+          if (pkgs) body.pipPackages = pkgs.split(',').map(s => s.trim()).filter(Boolean);
+        } else if (language === 'ruby') {
+          const gems = document.getElementById('gems')?.value.trim();
+          if (gems) body.gems = gems.split(',').map(s => s.trim()).filter(Boolean);
+          const gemfile = document.getElementById('gemfile')?.value.trim();
+          if (gemfile) body.gemfile = gemfile;
+        } else if (language === 'java') {
+          const maven = document.getElementById('maven-deps')?.value.trim();
+          if (maven) body.mavenDependencies = maven.split(',').map(s => s.trim()).filter(Boolean);
+        } else if (language === 'rust') {
+          const cargoToml = document.getElementById('cargo-toml')?.value.trim();
+          if (cargoToml) body.cargoToml = cargoToml;
+          const buildRs = document.getElementById('build-rs')?.value.trim();
+          if (buildRs) body.buildRs = buildRs;
+        } else if (language === 'csharp') {
+          const nuget = document.getElementById('nuget-packages')?.value.trim();
+          if (nuget) {
+            body.nugetPackages = nuget.split(',').map(s => {
+              const [name, version] = s.trim().split(':');
+              return { name, version };
+            }).filter(pkg => pkg.name);
+          }
+          const csproj = document.getElementById('csproj')?.value.trim();
+          if (csproj) body.csproj = csproj;
+        } else if (language === 'julia') {
+          const pkgs = document.getElementById('julia-packages')?.value.trim();
+          if (pkgs) body.juliaPackages = pkgs.split(',').map(s => s.trim()).filter(Boolean);
+        }
+      }
       try {
         const res = await fetch('/execute', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ language, code })
+          body: JSON.stringify(body)
         });
         const text = await res.text();
         let data;
