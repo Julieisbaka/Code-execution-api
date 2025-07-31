@@ -9,7 +9,8 @@ exec('docker info', (err) => {
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 5000;
+require('dotenv').config();
+const port = process.env.PORT || 5000;
 // Serve static files for frontend, configurable root
 const frontendRoot = process.env.FRONTEND_ROOT || 'public';
 app.use(express.static(frontendRoot));

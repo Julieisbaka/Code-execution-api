@@ -6,6 +6,29 @@ const os = require('os');
 
 
 module.exports = async function runPython(code, packages, opts = {}) {
+  const usePyodide = opts.usePyodide || false;
+  // ...existing code...
+  if (usePyodide) {
+    // Run code using Pyodide in Node.js
+    try {
+      const { loadPyodide } = await import('pyodide');
+      const pyodide = await loadPyodide();
+      let output = '';
+      // Redirect print to capture output
+      pyodide.runPython(`import sys\nfrom io import StringIO\nsys.stdout = StringIO()`);
+      pyodide.runPython(code);
+      output = pyodide.runPython('sys.stdout.getvalue()');
+      return { output };
+    } catch (err) {
+      return { error: err.message || String(err) };
+    }
+  }
+  // ...existing code for Docker...
+  const fs = require('fs');
+  const path = require('path');
+  const { exec } = require('child_process');
+  const os = require('os');
+
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'python-runner-'));
 
   // Language detection: opts.lang ('python' or 'hylang'), or auto-detect

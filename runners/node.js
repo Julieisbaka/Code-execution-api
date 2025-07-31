@@ -5,6 +5,22 @@ const { exec } = require('child_process');
 const os = require('os');
 
 module.exports = async function runNode(code, packages, opts = {}) {
+  const useBrowserEngine = opts.useBrowserEngine || false;
+  // If useBrowserEngine is true and no packages, run code in jsdom
+  if (useBrowserEngine && (!packages || (typeof packages === 'string' && !packages.trim()))) {
+    try {
+      const { JSDOM } = require('jsdom');
+      let output = '';
+      // Patch console.log to capture output
+      const dom = new JSDOM(``, { runScripts: "outside-only" });
+      dom.window.console.log = (...args) => { output += args.join(' ') + '\n'; };
+      dom.window.eval(code);
+      return { output: output.trim() };
+    } catch (err) {
+      return { error: err.message || String(err) };
+    }
+  }
+  // ...existing code for Node.js/Docker...
   // Write code to a temp file
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'node-runner-'));
   const codePath = path.join(tempDir, 'code.js');
